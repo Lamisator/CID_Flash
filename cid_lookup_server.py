@@ -17,10 +17,22 @@ class Serv(http.server.SimpleHTTPRequestHandler):
         number = params["num"][0]
         city = self.code_lookup(number)
         name = self.cid_lookup(number)
-        self.wfile.write(name.encode())
-        self.wfile.write("\n".encode())
-        self.wfile.write(city.encode())
+        
 
+
+        self.send_response(200)
+        self.send_header('Content-Type',
+                         'text/plain; charset=utf-8')
+        self.end_headers()
+
+
+        self.wfile.write(name.encode("utf8"))
+        self.wfile.write("\n".encode("utf8"))
+        self.wfile.write(city.encode("utf8"))
+
+
+        print(name)
+        print(city)
 
     def code_lookup(self, cid):
         if not "csv" in globals():
@@ -32,7 +44,7 @@ class Serv(http.server.SimpleHTTPRequestHandler):
             code = cid[:i]
             if int(code) in self.csv.keys():
                 return str(self.csv[int(code)]["city"])
-        return "Unknown city"
+        return ""
 
     def cid_lookup(self, cid):
         if not "cur" in globals():
